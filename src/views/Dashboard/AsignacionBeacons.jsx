@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import AsignacionListWithPagination from "../../components/ui/AsignacionListWithPagination";
 import { AsignacionContext } from "../../context/AsignacionContextProvider";
 import { RotateCw } from 'lucide-react';
+import { useLocation } from "react-router-dom";
 
 export const AsignacionBeacons = () =>{
 const {
@@ -18,13 +19,15 @@ const {
     errors,
     status,
     statusdeletebeacon,
+    fetchDniOptions,
+    fetchMacBeacon,
     fetchAsignacion,
     asigmacbeaconsOptiones,
   } = useContext(AsignacionContext);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-
+  const location = useLocation(); // Obtener la ubicación actual
   // console.log("asignaciones data",asignacionbeacons);
   
   const filtersasignacionbeacons = asignacionbeacons.filter(asigbeacon => {
@@ -58,6 +61,13 @@ const {
     setCurrentPage(1); // Resetea la paginación cada vez que cambia el filtro
   }, [searchQuery]);
 
+
+  useEffect(() => {
+    fetchDniOptions(); // Recargar los datos al navegar a esta página
+    fetchMacBeacon();
+  }, [location]); // Solo se ejecuta cuando la ubicación cambie
+
+
   return (
     <div className="p-2 bg-gray-100 min-h-screen">
       <section className="flex w-full gap-2">
@@ -72,6 +82,7 @@ const {
                 onChange={handleChange}
                 placeholder="DNI (8 digits)"
                 className="p-2 border rounded w-full"
+                autoComplete="off"
               />
              <datalist id="dniList">
                 {dniOptions.map((option, index) => (

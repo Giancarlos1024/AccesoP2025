@@ -117,30 +117,35 @@ export const UsersProvider = ({ children }) => {
   };
   const handleDelete = async () => {
     if (!dniToDelete || !/^[0-9]{8}$/.test(dniToDelete)) {
-      setStatus("Ingrese un DNI válido");
-      return;
+        setStatus("Ingrese un DNI válido");
+        return;
     }
+
     try {
-      const response = await fetch(`${apiUrl}/delete-user/${dniToDelete}`, {
-        method: "DELETE",
-      });
-  
-      if (!response.ok) {
-        throw new Error("No se pudo eliminar el usuario");
-      }
-      setStatusdeleteworker("Worker eliminado con éxito");
-      setDniToDelete("");
-  
-      // Esperar a que fetchUsers termine antes de continuar
-      await fetchUsers();
-      await fetchDniOptions();
+        const response = await fetch(`${apiUrl}/delete-user/${dniToDelete}`, {
+            method: "DELETE",
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "No se pudo eliminar el usuario");
+        }
+
+        setStatusdeleteworker("Worker eliminado con éxito");
+        setDniToDelete("");
+        
+        await fetchUsers();
+        await fetchDniOptions();
     } catch (error) {
-      setStatus(error.message);
+        console.error("Error eliminando worker:", error);
+        setStatus(error.message);
+        alert(error.message); // Muestra un mensaje de alerta
     }
-  
+
     setTimeout(() => setStatusdeleteworker(""), 3000);
-  };
-  
+};
+
 
   return (
     <UsersContext.Provider
