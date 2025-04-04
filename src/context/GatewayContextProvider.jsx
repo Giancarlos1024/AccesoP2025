@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
 export const GatewayContext = createContext();
 
@@ -12,18 +12,22 @@ export const GatewayContextProvider = ({ children }) => {
     const [x7, setX7] = useState(false);
 
     const fetchData = async (key, setState) => {
+        if (!apiUrl) {
+            console.error("Error: VITE_API_URL no está definido");
+            return;
+        }
         try {
             const response = await fetch(`${apiUrl}/${key}`);
-            if (!response.ok) throw new Error("Error en la respuesta del servidor");
+            if (!response.ok) throw new Error(`Error en la respuesta del servidor: ${response.status}`);
     
             const data = await response.json();
-            console.log(`Respuesta de la API ${key}:`, data); // Debugging
-            setState(data[key.toUpperCase()]); // Establecer el estado con el valor recibido
+            console.log(`Respuesta de la API ${key}:`, data);
+            setState(data[key.toUpperCase()] || false);
         } catch (error) {
             console.error("Error al obtener datos:", error);
         }
     };
-
+    
     return (
         <GatewayContext.Provider
             value={{

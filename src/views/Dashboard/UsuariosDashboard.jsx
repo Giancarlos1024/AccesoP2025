@@ -1,10 +1,9 @@
 import { useContext, useState, useEffect } from "react";
 import { UsersContext } from "../../context/UsersProvider";
 import UserListWithPagination from "../../components/ui/UserListWithPagination";
-import { RotateCw } from 'lucide-react';
+import { CloudLightning, RotateCw } from 'lucide-react';
 
 export const UsuariosDashboard = () => {
-
   const {
     formData,
     setFormData,
@@ -18,25 +17,25 @@ export const UsuariosDashboard = () => {
     handleChange,
     handleSubmit,
     handleDelete,
-    fetchUsers
+    fetchUsers,
+    showRegisterWorker,
+    setShowRegisterWorker,
+    showRegisterUnit, 
+    setShowRegisterUnit
   } = useContext(UsersContext);
-
   // Estado para el término de búsqueda
+  // console.log("datos de users",users)
   const [searchTerm, setSearchTerm] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [showRegisterWorker, setShowRegisterWorker] = useState(true); // Controla si mostrar la sección de trabajadores
-  const [showRegisterUnit, setShowRegisterUnit] = useState(false); // Controla si mostrar la sección de unidad móvil
-
-  console.log("datos de users",users);
+  
+  // console.log("datos de users",users);
   const filteredUsers = users.filter(user =>
     `${user.FirstName} ${user.SecondName || ''} ${user.LastName} ${user.SecondLastName} ${user.DNI} ${user.Company} ${user.Position}`
       .toLowerCase()
       .includes(searchQuery.toLowerCase())
   );
-
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 50;
-
 
   useEffect(() => {
     setCurrentPage(1); // Resetea la paginación cada vez que cambia el filtro
@@ -70,15 +69,14 @@ export const UsuariosDashboard = () => {
   
   // Efecto para sincronizar `lastname` con `area`
   useEffect(() => {
-    setFormData(prev => ({
-      ...prev,
-      lastname: prev.area  // Se asigna el valor de `area` a `lastname`
-    }));
-  }, [formData.area]);  // Se ejecuta cada vez que `area` cambie
+    if (showRegisterUnit) {  // Solo afecta cuando se registra una unidad móvil
+      setFormData(prev => ({
+        ...prev,
+        lastname: prev.area  // Se asigna el valor de `area` a `lastname`
+      }));
+    }
+  }, [formData.area, showRegisterUnit]);  // Se ejecuta cuando `area` o `showRegisterUnit` cambian
   
-  
-    
-    
   return (
     <div className="p-2 bg-gray-100 min-h-screen">
        <div className="bg-white w-full p-4 rounded-lg shadow-md mb-2 flex gap-4">
@@ -120,6 +118,7 @@ export const UsuariosDashboard = () => {
                 onChange={handleChange}
                 placeholder="Primer nombre"
                 className="p-2 border rounded w-full"
+                autoComplete="off"
               />
               {errors.firstname && <p className="text-red-500 text-sm">{errors.firstname}</p>}
             </div>
@@ -130,6 +129,7 @@ export const UsuariosDashboard = () => {
                 onChange={handleChange}
                 placeholder="Segundo nombre"
                 className="p-2 border rounded w-full"
+                autoComplete="off"
               />
             </div>
             <div>
@@ -139,6 +139,7 @@ export const UsuariosDashboard = () => {
                 onChange={handleChange}
                 placeholder="Primer Apellido"
                 className="p-2 border rounded w-full"
+                autoComplete="off"
               />
               {errors.lastname && <p className="text-red-500 text-sm">{errors.lastname}</p>}
             </div>
@@ -149,6 +150,7 @@ export const UsuariosDashboard = () => {
                 onChange={handleChange}
                 placeholder="Segundo Apellido"
                 className="p-2 border rounded w-full"
+                autoComplete="off"
               />
               {errors.secondlastname && <p className="text-red-500 text-sm">{errors.secondlastname}</p>}
             </div>
@@ -156,11 +158,19 @@ export const UsuariosDashboard = () => {
               <input
                 name="dni"
                 value={formData.dni}
-                onChange={handleChange}
+                onChange={(e) => {
+                  // Asegurarse de que el valor sea solo numérico y tenga un máximo de 8 dígitos
+                  const value = e.target.value.replace(/[^0-9]/g, ''); // Solo números
+                  if (value.length <= 8) {
+                    setFormData((prev) => ({ ...prev, dni: value }));
+                  }
+                }}
                 placeholder="DNI (8 digitos)"
                 className="p-2 border rounded w-full"
+                autoComplete="off"
               />
               {errors.dni && <p className="text-red-500 text-sm">{errors.dni}</p>}
+
             </div>
             <div>
               <input
@@ -169,6 +179,7 @@ export const UsuariosDashboard = () => {
                 onChange={handleChange}
                 placeholder="Empresa"
                 className="p-2 border rounded w-full"
+                autoComplete="off"
               />
               {errors.company && <p className="text-red-500 text-sm">{errors.company}</p>}
             </div>
@@ -179,6 +190,7 @@ export const UsuariosDashboard = () => {
                 onChange={handleChange}
                 placeholder="Cargo"
                 className="p-2 border rounded w-full"
+                autoComplete="off"
               />
               {errors.position && <p className="text-red-500 text-sm">{errors.position}</p>}
             </div>
@@ -189,6 +201,7 @@ export const UsuariosDashboard = () => {
                 onChange={handleChange}
                 placeholder="Area"
                 className="p-2 border rounded w-full"
+                autoComplete="off"
               />
               {errors.area && <p className="text-red-500 text-sm">{errors.area}</p>}
             </div>
@@ -233,6 +246,7 @@ export const UsuariosDashboard = () => {
             onChange={(e) => setDniToDelete(e.target.value)}
             placeholder="DNI Trabajador"
             className="p-2 border rounded w-full mb-2"
+            autoComplete="off"
           />
           <datalist id="dniList">
             {dniOptions.map((option, index) => (
@@ -257,7 +271,6 @@ export const UsuariosDashboard = () => {
         <div className="bg-white w-full p-6 rounded-lg shadow-md mb-6">
           <h2 className="text-xl font-semibold mb-4">Registrar Unidad Móvil</h2>
           <div className="grid grid-cols-2 gap-4">
-            {/* ... (los inputs del formulario de registro) */}
             <div>
               <input
                 name="firstname"
@@ -265,38 +278,10 @@ export const UsuariosDashboard = () => {
                 onChange={handleChange}
                 placeholder="Tipo de vehículo"
                 className="p-2 border rounded w-full"
+                autoComplete="off"
               />
               {errors.firstname && <p className="text-red-500 text-sm">{errors.firstname}</p>}
             </div>
-            {/* <div>
-              <input
-                name="secondname"
-                value={formData.secondname}
-                onChange={handleChange}
-                placeholder="Segundo nombre"
-                className="p-2 border rounded w-full"
-              />
-            </div> */}
-            <div>
-              <input
-                name="lastname"
-                value={formData.lastname}
-                onChange={handleChange}
-                placeholder="Area copia"
-                className="p-2 border rounded w-full"
-              />
-              {errors.lastname && <p className="text-red-500 text-sm">{errors.lastname}</p>}
-            </div>
-            {/* <div>
-              <input
-                name="secondlastname"
-                value={formData.secondlastname}
-                onChange={handleChange}
-                placeholder="Segundo Apellido"
-                className="p-2 border rounded w-full"
-              />
-              {errors.secondlastname && <p className="text-red-500 text-sm">{errors.secondlastname}</p>}
-            </div> */}
             <div>
               <input
                 name="dni"
@@ -304,6 +289,7 @@ export const UsuariosDashboard = () => {
                 onChange={handleChange}
                 placeholder="Placa"
                 className="p-2 border rounded w-full"
+                autoComplete="off"
               />
               {errors.dni && <p className="text-red-500 text-sm">{errors.dni}</p>}
             </div>
@@ -314,6 +300,7 @@ export const UsuariosDashboard = () => {
                 onChange={handleChange}
                 placeholder="Empresa"
                 className="p-2 border rounded w-full"
+                autoComplete="off"
               />
               {errors.company && <p className="text-red-500 text-sm">{errors.company}</p>}
             </div>
@@ -324,6 +311,7 @@ export const UsuariosDashboard = () => {
                 onChange={handleChange}
                 placeholder="Modelo de unidad"
                 className="p-2 border rounded w-full"
+                autoComplete="off"
               />
               {errors.position && <p className="text-red-500 text-sm">{errors.position}</p>}
             </div>
@@ -334,6 +322,7 @@ export const UsuariosDashboard = () => {
                 onChange={handleChange}
                 placeholder="Area"
                 className="p-2 border rounded w-full"
+                autoComplete="off"
               />
               {errors.area && <p className="text-red-500 text-sm">{errors.area}</p>}
             </div>
@@ -378,6 +367,7 @@ export const UsuariosDashboard = () => {
             onChange={(e) => setDniToDelete(e.target.value)}
             placeholder="Placa de vehículo"
             className="p-2 border rounded w-full mb-2"
+            autoComplete="off"
           />
           <datalist id="dniList">
             {dniOptions.map((option, index) => (
@@ -402,7 +392,7 @@ export const UsuariosDashboard = () => {
           <div>
 
           </div>
-          <h2 className="text-xl mt-0 font-semibold mb-0 text-center">Lista de Trabajadores</h2>
+          <h2 className="text-xl mt-0 font-semibold mb-0 text-center">Lista de Registros</h2>
           <div className=" flex justify-end">
             <RotateCw
               size={35}
@@ -424,6 +414,7 @@ export const UsuariosDashboard = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full px-4 border rounded-md h-10"
+            autoComplete="off"
           />
           <button
             onClick={() => setSearchQuery(searchTerm)} // Solo busca al hacer clic

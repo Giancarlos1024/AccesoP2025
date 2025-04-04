@@ -118,6 +118,7 @@ export const HomeDashboard = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
+  console.log("datos cccc",currentItems)
   // Cambiar de página
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   
@@ -248,6 +249,7 @@ export const HomeDashboard = () => {
                     
                     <th className="py-3 px-4 text-left">Cargo</th>
                     <th className="py-3 px-4 text-left">Área</th>
+                    <th className="py-3 px-4 text-left">Beacon</th>
                     <th className="py-3 px-4 text-left">Fecha</th>
                     <th className="py-3 px-4 text-left">Empresa</th>
                   </tr>
@@ -263,6 +265,7 @@ export const HomeDashboard = () => {
                       
                       <td className="py-3 px-4">{persona.Position}</td>
                       <td className="py-3 px-4">{persona.Area}</td>
+                      <td className="py-3 px-4">{persona.MacAddressiB}</td>
                       <td className="py-3 px-4">{formatFecha(persona.Fecha)}</td>
                       <td className="py-3 px-4">{persona.Company}</td>
                     </tr>

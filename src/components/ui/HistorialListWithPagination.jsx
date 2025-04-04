@@ -7,35 +7,27 @@ export default function HistorialListWithPagination({ historial, totalItems, cur
     const [searchQuery, setSearchQuery] = useState("");
 
     console.log("datos de historial", historial);
-
     const filterhistorial1 = historial.filter(historia => {
         const search = searchQuery.toLowerCase().replace(/-/g, "/");
-    
-        const formattedDate = historia.FECHA
-            ? historia.FECHA.split(" ")[0] // Extraer solo la fecha sin la hora
-            : "";
-    
-        return `${historia["NOMBRES Y APELLIDOS"]} ${historia.DNI} ${historia["COMPAÑIA"]} ${historia["PUESTO"]} ${historia["MAC BEACON"]} ${formattedDate} ${historia["TIPO DE BEACON"]}`
+        const [datePart, timePart] = historia.FECHA ? historia.FECHA.split(" ") : ["", ""];
+        const formattedDate = datePart || "";
+        const formattedTime = timePart || "";  // El formato de la hora es "HH:MM:SS"
+        // Concatenar todos los campos relevantes para la búsqueda
+        return `${historia["NOMBRES Y APELLIDOS"]} ${historia.DNI} ${historia["COMPAÑIA"]} ${historia["PUESTO"]} ${historia["MAC BEACON"]} ${formattedDate} ${formattedTime} ${historia["TIPO DE BEACON"]}`
             .toLowerCase()
             .includes(search);
     });
-    
-    
-
-
     // Aplicar la paginación después del filtrado
     const totalFilteredItems = filterhistorial1.length; // Total de registros filtrados
     const totalPages = Math.ceil(totalFilteredItems / itemsPerPage);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentHistorial = filterhistorial1.slice(indexOfFirstItem, indexOfLastItem);
-
     const paginate = (pageNumber) => {
         if (pageNumber >= 1 && pageNumber <= totalPages) {
             setCurrentPage(pageNumber);
         }
     };
-
     const getPageNumbers = () => {
         const maxVisiblePages = 5;
         let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
@@ -48,7 +40,6 @@ export default function HistorialListWithPagination({ historial, totalItems, cur
 
         return [...Array(endPage - startPage + 1)].map((_, index) => startPage + index);
     };
- 
     useEffect(() => {
         setCurrentPage(1); // Resetea la paginación cada vez que cambia el filtro
     }, [searchQuery]);
@@ -60,28 +51,27 @@ export default function HistorialListWithPagination({ historial, totalItems, cur
                 <button
                     onClick={() => {
                         setModalOpen(false);
-
                     }}
                     className="absolute cursor-pointer text-xl right-5 top-0 mt-4 px-5 py-2 text-black rounded-lg transition duration-300"
                 >
                     x
                 </button>
                 <div className='flex my-3'>
-                        <input
+                    <input
                         type="text"
                         placeholder="Buscar por dni, nombre, empresa, cargo, área o fecha..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full px-4 border rounded-md h-10"
-                        />
-                        <button
+                    />
+                    <button
                         onClick={() => setSearchQuery(searchTerm)}
                         className="ml-2 mt-0 bg-[rgb(23,50,107)] text-white text-lg px-4 py-1 rounded-lg cursor-pointer hover:bg-cyan-400 hover:scale-102 transition-all duration-200 
                         active:opacity-50"
-                        >
+                    >
                         Buscar
-                        </button>
-                    </div>
+                    </button>
+                </div>
                 <div className="max-h-[70vh] overflow-y-auto">
                     <table className="w-full border-collapse shadow-md">
                         <thead>
@@ -93,9 +83,9 @@ export default function HistorialListWithPagination({ historial, totalItems, cur
                                 <th className="px-4 py-3 text-white text-xs">Compañía</th>
                                 <th className="px-4 py-3 text-white text-xs">Área</th>
                                 <th className="px-4 py-3 text-white text-xs">Asistencia</th>
-                                <th className="px-4 py-3 text-white text-xs">Fecha</th>
                                 <th className="px-4 py-3 text-white text-xs">Punto de Control</th>
                                 <th className="px-4 py-3 text-white text-xs">Tipo de Beacon</th>
+                                <th className="px-4 py-3 text-white text-xs">Fecha</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -109,9 +99,9 @@ export default function HistorialListWithPagination({ historial, totalItems, cur
                                         <td className="px-4 py-2 text-xs">{item.COMPAÑIA}</td>
                                         <td className="px-4 py-2 text-xs">{item.AREA}</td>
                                         <td className="px-4 py-2 text-xs">{item.ASISTENCIA}</td>
-                                        <td className="px-4 py-2 text-xs">{item.FECHA}</td>
                                         <td className="px-4 py-2 text-xs">{item["PUNTO CONTROL"]}</td>
                                         <td className="px-4 py-2 text-xs">{item["TIPO DE BEACON"]}</td>
+                                        <td className="px-4 py-2 text-xs">{item.FECHA}</td>
                                     </tr>
                                 ))
                             ) : (
@@ -124,7 +114,6 @@ export default function HistorialListWithPagination({ historial, totalItems, cur
                         </tbody>
                     </table>
                 </div>
-
                 {/* Paginación */}
                 <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between mt-4">
                     <p className="text-sm text-gray-700">

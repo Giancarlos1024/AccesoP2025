@@ -21,6 +21,9 @@ export const UsersProvider = ({ children }) => {
   const [status, setStatus] = useState("");
   const [statusdeleteworker, setStatusdeleteworker] = useState("");
 
+  const [showRegisterWorker, setShowRegisterWorker] = useState(true); // Controla si mostrar la sección de trabajadores
+  const [showRegisterUnit, setShowRegisterUnit] = useState(false); // Controla si mostrar la sección de unidad móvil
+
   // Función para obtener la lista de DNIs (para el datalist)
   const fetchDniOptions = async () => {
     try {
@@ -56,28 +59,71 @@ export const UsersProvider = ({ children }) => {
     //  console.log("Usuarios actualizados:", users);
   }, [users]);
   
+  const handleChange = (e) => {
+    const { name, value } = e.target;
   
-
+    // Actualizamos el valor en el formulario
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  
+    // Validación condicional para el campo 'dni'
+    if (name === 'dni') {
+      // Si estamos registrando un trabajador, validamos el campo DNI
+      if (showRegisterWorker) {
+        // Aquí puedes poner tu lógica de validación del DNI (por ejemplo, asegurarte de que sea numérico y tenga 8 dígitos)
+        if (value.length !== 8 || !/^\d+$/.test(value)) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            dni: 'El DNI debe ser un número de 8 dígitos',
+          }));
+        } else {
+          // Si la validación pasa, se limpia el error
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            dni: '',
+          }));
+        }
+      } else {
+        // Si estamos en el modo de registrar unidad, no se realiza la validación
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          dni: '', // Limpiamos cualquier error del campo dni
+        }));
+      }
+    }
+  };
+  
+  
+  
+  
+  
   const validateForm = () => {
     let newErrors = {};
-    if (!formData.firstname) newErrors.firstname = "First name is required.";
-    if (!formData.lastname) newErrors.lastname = "Last name is required.";
-    if (!formData.secondlastname) newErrors.secondlastname = "Second last name is required.";
-    if (!formData.dni) {
-      newErrors.dni = "DNI is required.";
-    } else if (!/^[0-9]{8}$/.test(formData.dni)) {
-      newErrors.dni = "DNI must be exactly 8 digits.";
+  
+    if (!formData.firstname) newErrors.firstname = "Dato requerido.";
+    if (!formData.lastname) newErrors.lastname = "Dato requerido.";
+    if (!formData.secondlastname) newErrors.secondlastname = "Dato requerido.";
+  
+    // Validación de DNI solo si "Registrar Trabajadores" está activo
+    if (showRegisterWorker) {
+      if (!formData.dni) {
+        newErrors.dni = "Dato requerido.";
+      } else if (!/^\d{8}$/.test(formData.dni)) {
+        newErrors.dni = "Dato requerido";
+      }
     }
-    if (!formData.company) newErrors.company = "Company is required.";
-    if (!formData.position) newErrors.position = "Position is required.";
-    if (!formData.area) newErrors.area = "Area is required.";
-
+  
+    if (!formData.company) newErrors.company = "Dato requerido.";
+    if (!formData.position) newErrors.position = "Dato requerido.";
+    if (!formData.area) newErrors.area = "Dato requerido.";
+  
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  
+  
   const handleSubmit = async () => {
     if (!validateForm()) return;
     try {
@@ -117,30 +163,34 @@ export const UsersProvider = ({ children }) => {
   };
   const handleDelete = async () => {
     if (!dniToDelete || !/^[0-9]{8}$/.test(dniToDelete)) {
-      setStatus("Ingrese un DNI válido");
-      return;
+        setStatus("Ingrese un DNI válido");
+        return;
     }
+
     try {
-      const response = await fetch(`${apiUrl}/delete-user/${dniToDelete}`, {
-        method: "DELETE",
-      });
-  
-      if (!response.ok) {
-        throw new Error("No se pudo eliminar el usuario");
-      }
-      setStatusdeleteworker("Worker eliminado con éxito");
-      setDniToDelete("");
-  
-      // Esperar a que fetchUsers termine antes de continuar
-      await fetchUsers();
-      await fetchDniOptions();
+        const response = await fetch(`${apiUrl}/delete-user/${dniToDelete}`, {
+            method: "DELETE",
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "No se pudo eliminar el usuario");
+        }
+
+        setStatusdeleteworker("Worker eliminado con éxito");
+        setDniToDelete("");
+        
+        await fetchUsers();
+        await fetchDniOptions();
     } catch (error) {
-      setStatus(error.message);
+        console.error("Error eliminando worker:", error);
+        setStatus(error.message);
+        alert(error.message); // Muestra un mensaje de alerta
     }
-  
+
     setTimeout(() => setStatusdeleteworker(""), 3000);
-  };
-  
+};
 
   return (
     <UsersContext.Provider
@@ -157,7 +207,12 @@ export const UsersProvider = ({ children }) => {
         handleChange,
         handleSubmit,
         handleDelete,
-        fetchUsers
+        fetchUsers,
+        showRegisterWorker,
+        setShowRegisterWorker,
+        showRegisterUnit, 
+        setShowRegisterUnit
+
       }}
     >
       {children}

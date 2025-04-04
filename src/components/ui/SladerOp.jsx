@@ -97,7 +97,7 @@ export const Slader = ({ isCollapsed, setIsCollapsed }) => {
                                 }
                             >
                                 <PackagePlus className="mr-2 ml-2"/>
-                                {!isCollapsed && "Registrar Trabajadores"}
+                                {!isCollapsed && "Gestión de Registros"}
                             </NavLink>
                         </li>
 

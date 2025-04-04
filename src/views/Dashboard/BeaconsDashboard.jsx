@@ -57,8 +57,9 @@ export const BeaconsDashboard = () => {
                 name="MacAddressiB"
                 value={formData.MacAddressiB}
                 onChange={handleChange}
-                placeholder="MacAddressiB (Ej: C30000XXXXXX)"
+                placeholder="MAC del Beacon"
                 className={`p-2 border rounded w-full ${errors.MacAddressiB ? "border-red-500" : ""}`}
+                autoComplete="off"
               />
               {errors.MacAddressiB && <p className="text-red-500 text-sm">{errors.MacAddressiB}</p>}
             </div>
@@ -139,7 +140,7 @@ export const BeaconsDashboard = () => {
         <div className='flex mt-3'>
           <input
             type="text"
-            placeholder="Buscar por MacAddressiB o TypeBeacon "
+            placeholder="Buscar por MAC Beacon o Tipo de Beacon "
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full px-4 border rounded-md h-10"

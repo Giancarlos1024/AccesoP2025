@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import AsignacionListWithPagination from "../../components/ui/AsignacionListWithPagination";
 import { AsignacionContext } from "../../context/AsignacionContextProvider";
 import { RotateCw } from 'lucide-react';
+import { useLocation } from "react-router-dom";
 
 export const AsignacionBeacons = () =>{
 const {
@@ -18,13 +19,15 @@ const {
     errors,
     status,
     statusdeletebeacon,
+    fetchDniOptions,
+    fetchMacBeacon,
     fetchAsignacion,
     asigmacbeaconsOptiones,
   } = useContext(AsignacionContext);
-
+ console.log("datos de asignaciones", asignacionbeacons)
   const [searchTerm, setSearchTerm] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-
+  const location = useLocation(); // Obtener la ubicación actual
   // console.log("asignaciones data",asignacionbeacons);
   
   const filtersasignacionbeacons = asignacionbeacons.filter(asigbeacon => {
@@ -39,7 +42,7 @@ const {
         })
       : "";
   
-    return `${asigbeacon.FirstName} ${asigbeacon.SecondName || ''} ${asigbeacon.LastName} ${asigbeacon.SecondLastName} ${asigbeacon.DNI} ${asigbeacon.Company} ${asigbeacon.Position} ${asigbeacon.MacAddressiB} ${formattedDate}`
+    return `${asigbeacon.FirstName} ${asigbeacon.SecondName || ''} ${asigbeacon.LastName} ${asigbeacon.SecondLastName} ${asigbeacon.DNI} ${asigbeacon.Company} ${asigbeacon.Position} ${asigbeacon.MacAddressiB} ${asigbeacon.TypeBeacon} ${formattedDate}`
       .toLowerCase()
       .includes(search);
   });
@@ -58,6 +61,13 @@ const {
     setCurrentPage(1); // Resetea la paginación cada vez que cambia el filtro
   }, [searchQuery]);
 
+
+  useEffect(() => {
+    fetchDniOptions(); // Recargar los datos al navegar a esta página
+    fetchMacBeacon();
+  }, [location]); // Solo se ejecuta cuando la ubicación cambie
+
+
   return (
     <div className="p-2 bg-gray-100 min-h-screen">
       <section className="flex w-full gap-2">
@@ -70,8 +80,9 @@ const {
                 list="dniList"
                 value={formData.dni}
                 onChange={handleChange}
-                placeholder="DNI (8 digits)"
+                placeholder="DNI (8 digitos)"
                 className="p-2 border rounded w-full"
+                autoComplete="off"
               />
              <datalist id="dniList">
                 {dniOptions.map((option, index) => (
@@ -85,7 +96,7 @@ const {
                 list="MacAddressiBList"
                 value={formData.MacAddressiB}
                 onChange={handleChange}
-                placeholder="MacAddressiB"
+                placeholder="MAC del Beacon"
                 className={`p-2 border rounded w-full ${errors.MacAddressiB ? "border-red-500" : ""}`}
               />
               <datalist id="MacAddressiBList">
@@ -156,7 +167,7 @@ const {
         <div className='flex mt-3'>
           <input
             type="text"
-            placeholder="Buscar por dni, nombre, empresa, cargo, área o fecha..."
+            placeholder="Buscar por dni, nombre, empresa, cargo, área, tipo de beacon o fecha..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full px-4 border rounded-md h-10"

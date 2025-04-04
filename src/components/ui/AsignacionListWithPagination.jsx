@@ -50,6 +50,7 @@ export default function AsignacionListWithPagination({ asignacion, totalItems, c
                         <th className="px-4 py-3 text-white text-xs">PUESTO</th>
                         <th className="px-4 py-3 text-white text-xs">AREA</th>
                         <th className="px-4 py-3 text-white text-xs">MAC BEACON</th>
+                        <th className="px-4 py-3 text-white text-xs">TIPO DE BEACON</th>
                         <th className="px-4 py-3 text-white text-xs">FECHA</th>
                     </tr>
                 </thead>
@@ -62,6 +63,7 @@ export default function AsignacionListWithPagination({ asignacion, totalItems, c
                             <td className="px-4 py-2 text-xs border-b">{asignacion.Position}</td>
                             <td className="px-4 py-2 text-xs border-b">{asignacion.Area}</td>
                             <td className="px-4 py-2 text-xs border-b">{asignacion.MacAddressiB}</td>
+                            <td className="px-4 py-2 text-xs border-b">{asignacion.TypeBeacon}</td>
                             <td className="px-4 py-2 text-xs border-b">{formatFecha(asignacion.Timestamp)}</td>
                         </tr>
                     ))}

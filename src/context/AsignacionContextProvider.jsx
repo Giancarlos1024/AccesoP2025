@@ -44,6 +44,7 @@ export const AsignacionContextProvider = ({ children }) => {
       try {
       const response = await fetch(`${apiUrl}/get-dnis2`);
       const data = await response.json();
+      // console.log("datos de dniOptions", data);
       setDniOptions(data);
       } catch (error) {
       console.error("Error fetching DNI options:", error);
@@ -55,7 +56,9 @@ export const AsignacionContextProvider = ({ children }) => {
       try {
       const response = await fetch(`${apiUrl}/get-macbeacon`);
       const data = await response.json();
+      // console.log("datos de MacBeacon", data);
       setMacbeacon(data);
+
       } catch (error) {
       console.error("Error fetching DNI options:", error);
       }
@@ -85,7 +88,7 @@ export const AsignacionContextProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    console.log("asginaciones actualizados:", asignacionbeacons);
+    // console.log("asginaciones actualizados:", asignacionbeacons);
   }, [asignacionbeacons]);
 
   // 📌 Manejar cambios en el formulario
@@ -143,7 +146,7 @@ export const AsignacionContextProvider = ({ children }) => {
       await fetchAsignacion();
       await fetchDniOptions();  // Llamar para actualizar la lista de DNIs
       await fetchMacBeacon();   // Llamar para actualizar la lista de MAC Beacons
-  
+      await fetchAsignacionMacBeacons();
       setTimeout(() => setStatus(""), 3000);
     } catch (error) {
       console.error("❌ Error en el registro:", error);
@@ -174,7 +177,9 @@ export const AsignacionContextProvider = ({ children }) => {
   
       // ⚡ Recargar datos después de la eliminación
       await fetchAsignacion();
-  
+      await fetchAsignacionMacBeacons();
+      await fetchDniOptions();
+      await fetchMacBeacon();
     } catch (error) {
       console.error("Error eliminando asignación:", error);
       alert("Ocurrió un error eliminando la asignación. Intenta nuevamente.");
@@ -200,6 +205,8 @@ export const AsignacionContextProvider = ({ children }) => {
         errors, 
         status,
         statusdeletebeacon,
+        fetchDniOptions,
+        fetchMacBeacon,
         fetchAsignacion,
         asigmacbeaconsOptiones
       }}>

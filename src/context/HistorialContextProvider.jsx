@@ -1,10 +1,10 @@
 import { useState, useEffect, createContext } from "react";
 
 export const HistorialContext = createContext();
-
 export const HistorialContextProvider = ({ children }) => {
     const apiUrl = import.meta.env.VITE_API_URL;
     const [historial1, setHistorial1] = useState([]);
+    const [empresasworkers, setEmpresasWorkers] = useState([]);
 
     const handleSearch = async (filters) => {
         try {
@@ -13,12 +13,9 @@ export const HistorialContextProvider = ({ children }) => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(filters),
             });
-    
             if (!response.ok) throw new Error("Error en la búsqueda");
-    
             const data = await response.json();
             console.log("Resultados obtenidos:", data);
-    
             // Validar que data sea un array antes de actualizar el estado
             if (Array.isArray(data)) {
                 setHistorial1(data); // Se actualiza el estado directamente sin necesidad de setTimeout
@@ -30,8 +27,6 @@ export const HistorialContextProvider = ({ children }) => {
             console.error("Error en la búsqueda:", error);
         }
     };
-    
-
     const fetchHistorial = async (filters = null) => {
         try {
             setHistorial1([]); // Limpiar antes de la búsqueda
@@ -46,32 +41,37 @@ export const HistorialContextProvider = ({ children }) => {
     
                 url += `?${queryParams.toString()}`;
             }
-    
             const response = await fetch(url);
             if (!response.ok) throw new Error("Error al obtener historial");
-    
             const data = await response.json();
-            console.log("Datos filtrados:", data);
-    
             if (Array.isArray(data)) {
                 setHistorial1(data);
             } else {
-                console.warn("Respuesta inesperada:", data);
+                // console.warn("Respuesta inesperada:", data);
                 setHistorial1([]);
             }
         } catch (error) {
-            console.error("Error en fetchHistorial:", error);
+            // console.error("Error en fetchHistorial:", error);
             setHistorial1([]); // Limpiar en caso de error
         }
     };
-    
+
+    const fetchEmpresasWorkers = async () => {
+        try {
+          const response = await fetch(`${apiUrl}/get-empresa`);
+          const data = await response.json();
+          setEmpresasWorkers(data);
+        } catch (error) {
+          console.error("Error fetching DNI options:", error);
+        }
+      };
 
     useEffect(() => {
         fetchHistorial();
+        fetchEmpresasWorkers();
     }, []);
-
     return (
-        <HistorialContext.Provider value={{ historial1, handleSearch, fetchHistorial }}>
+        <HistorialContext.Provider value={{ historial1, handleSearch, fetchHistorial,empresasworkers }}>
             {children}
         </HistorialContext.Provider>
     );

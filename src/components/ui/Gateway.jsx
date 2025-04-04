@@ -8,15 +8,17 @@ const gateways = [
             {
                 name: "BOCAMINA HUACRACOCHA",
                 devices: [
-                    { mac: "AC:23:3F:C1:8C:F8", ip: "10.24.198.70", key: "x3" },
-                    { mac: "AC:23:3F:C1:8D:08", ip: "10.24.198.71", key: "x4" },
+                    { mac: "AC:23:3F:C1:92:6B", ip: "192.168.18.90", key: "x3" },
+                    { mac: "AC:23:3F:C1:BC:19", ip: "192.168.18.91", key: "x1" },
+                    
                 ],
             },
             {
                 name: "BOCAMINA RP-212",
                 devices: [
-                    { mac: "AC:23:3F:C1:BC:1F", ip: "10.24.166.41", key: "x5" },
-                    { mac: "AC:23:3F:C1:92:74", ip: "10.24.166.40", key: "x7" },
+                    { mac: "AC:23:3F:C1:8C:FB", ip: "192.168.18.92", key: "x4" },
+                    { mac: "AC:23:3F:C1:77:5A", ip: "192.168.18.93", key: "x2" },
+                    
                 ],
             },
         ],
@@ -27,8 +29,9 @@ const gateways = [
             {
                 name: "ACCESO ZONA OESTE",
                 devices: [
-                    { mac: "AC:23:3F:C1:92:6C", ip: "10.24.198.73", key: "x1" },
-                    { mac: "AC:23:3F:C1:BC:17", ip: "10.24.198.74", key: "x2" },
+                    { mac: "AC:23:3F:C1:8C:FB", ip: "192.168.18.92", key: "x7" },
+                    { mac: "AC:23:3F:C1:77:5A", ip: "192.168.18.93", key: "x5" },
+                    
                 ],
             },
         ],
@@ -40,13 +43,23 @@ export const Gateway = () => {
     const { x1, x2, x3, x4, x5, x7, setX1, setX2, setX3, setX4, setX5, setX7, fetchData } = useContext(GatewayContext);
 
     useEffect(() => {
-        // Hacer las peticiones para cada estado usando la nueva función fetchData
-        fetchData('x1', setX1);
-        fetchData('x2', setX2);
-        fetchData('x3', setX3);
-        fetchData('x4', setX4);
-        fetchData('x5', setX5);
-        fetchData('x7', setX7);
+        const fetchAllData = () => {
+            fetchData('x1', setX1);
+            fetchData('x2', setX2);
+            fetchData('x3', setX3);
+            fetchData('x4', setX4);
+            fetchData('x5', setX5);
+            fetchData('x7', setX7);
+        };
+    
+        // Llamar la primera vez
+        fetchAllData();
+    
+        // Configurar la actualización cada 10 segundos
+        const interval = setInterval(fetchAllData, 5000);
+    
+        // Limpiar el intervalo al desmontar el componente
+        return () => clearInterval(interval);
     }, []);
 
 
