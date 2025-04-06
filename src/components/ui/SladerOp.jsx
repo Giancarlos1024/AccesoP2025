@@ -4,7 +4,11 @@ import {
     UserRoundPlus,
     CircleChevronRight,
     CircleChevronLeft,
-    PackagePlus
+    PackagePlus,
+    UserCog,
+    Radar,
+    FileClock,
+    Database
 } from "lucide-react";
 import { NavLink } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeProvider';
@@ -96,7 +100,7 @@ export const Slader = ({ isCollapsed, setIsCollapsed }) => {
                                     `flex items-center p-3 mx-3 text-xs rounded-lg font-medium ${isActive ? activeClass : inactiveClass}`
                                 }
                             >
-                                <PackagePlus className="mr-2 ml-2"/>
+                                <UserCog className="mr-2 ml-2"/>
                                 {!isCollapsed && "Gestión de Registros"}
                             </NavLink>
                         </li>
@@ -112,7 +116,7 @@ export const Slader = ({ isCollapsed, setIsCollapsed }) => {
                                     `flex items-center p-3 mx-3 text-xs rounded-lg font-medium ${isActive ? activeClass : inactiveClass}`
                                 }
                             >
-                                <PackagePlus className="mr-2 ml-2"/>
+                                <Radar className="mr-2 ml-2"/>
                                 {!isCollapsed && "Registrar Beacons"}
                             </NavLink>
                         </li>
@@ -126,7 +130,7 @@ export const Slader = ({ isCollapsed, setIsCollapsed }) => {
                                     `flex items-center p-3 mx-3 text-xs rounded-lg font-medium ${isActive ? activeClass : inactiveClass}`
                                 }
                             >
-                                <PackagePlus className="mr-2 ml-2"/>
+                                <Database className="mr-2 ml-2"/>
                                 {!isCollapsed && "Registrar Asignaciones"}
                             </NavLink>
                         </li>
@@ -139,7 +143,7 @@ export const Slader = ({ isCollapsed, setIsCollapsed }) => {
                                 `flex items-center p-3 mx-3 text-xs rounded-lg font-medium ${isActive ? activeClass : inactiveClass}`
                             }
                         >
-                            <PackagePlus className="mr-2 ml-2"/>
+                            <FileClock  className="mr-2 ml-2"/>
                             {!isCollapsed && "Historial"}
                         </NavLink>
                     </li>

@@ -249,10 +249,21 @@ export const UsuariosDashboard = () => {
             autoComplete="off"
           />
           <datalist id="dniList">
-            {dniOptions.map((option, index) => (
-              <option key={index} value={option.DNI} />
-            ))}
+            {dniOptions
+              .filter(option => {
+                if (showRegisterWorker) {
+                  return /^\d{8}$/.test(option.DNI); // Solo DNIs numéricos
+                }
+                if (showRegisterUnit) {
+                  return !/^\d{8}$/.test(option.DNI); // No DNIs numéricos
+                }
+                return true;
+              })
+              .map((option, index) => (
+                <option key={index} value={option.DNI} />
+              ))}
           </datalist>
+
           <button onClick={handleDelete} className="bg-[#17326b] cursor-pointer  text-white px-4 py-2 rounded mb-2">
             Eliminar
           </button>
@@ -370,9 +381,19 @@ export const UsuariosDashboard = () => {
             autoComplete="off"
           />
           <datalist id="dniList">
-            {dniOptions.map((option, index) => (
-              <option key={index} value={option.DNI} />
-            ))}
+            {dniOptions
+              .filter(option => {
+                if (showRegisterWorker) {
+                  return /^\d{8}$/.test(option.DNI); // Solo DNIs numéricos
+                }
+                if (showRegisterUnit) {
+                  return !/^\d{8}$/.test(option.DNI); // No DNIs numéricos
+                }
+                return true;
+              })
+              .map((option, index) => (
+                <option key={index} value={option.DNI} />
+              ))}
           </datalist>
           <button onClick={handleDelete} className="bg-[#17326b] cursor-pointer  text-white px-4 py-2 rounded mb-2">
             Eliminar

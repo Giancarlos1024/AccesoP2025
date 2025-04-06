@@ -128,16 +128,14 @@ export const BeaconsContextProvider = ({ children }) => {
         body: JSON.stringify({ macAddress: macToDelete }),
       });
       
-  
       const data = await response.json();
-  
+
       if (data.success) {
-        setStatusdeletebeacon("beacon eliminado con éxito");
+        setStatusdeletebeacon("Beacon eliminado con éxito");
         setBeacons(prevBeacons => prevBeacons.filter(beacon => beacon.MacAddressiB !== macToDelete));
         setMacToDelete("");
-
       } else {
-        throw new Error(data.error || "No se pudo eliminar el beacon.");
+        setStatusdeletebeacon(data.error || "No se pudo eliminar el beacon.");
       }
     } catch (error) {
       console.error("Error eliminando beacon:", error);

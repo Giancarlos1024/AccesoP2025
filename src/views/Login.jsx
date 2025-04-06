@@ -112,7 +112,7 @@ export const Login = () => {
                                 Iniciar Sesión
                             </button>
                         </div>
-                        <p className="text-xs mt-5 text-center max-[768px]:text-xs  max-[768px]:mt-2  max-[768px]:text-center text-white">Copyright @2025 New Project SAC - Control de Acceso + Cultura Digital</p>
+                        <p className="text-xs mt-5 text-center max-[768px]:text-xs  max-[768px]:mt-2  max-[768px]:text-center text-white">Copyright @2025 New Project SAC - Control de Acceso + Tracking</p>
                         <p className="text-xs mt-5 text-center max-[768px]:text-xs  max-[768px]:mt-2  max-[768px]:text-center text-white">www.newproject.com.pe</p>
                     </form>
                 </section>

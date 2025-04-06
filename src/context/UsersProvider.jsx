@@ -162,35 +162,47 @@ export const UsersProvider = ({ children }) => {
     }
   };
   const handleDelete = async () => {
-    if (!dniToDelete || !/^[0-9]{8}$/.test(dniToDelete)) {
-        setStatus("Ingrese un DNI válido");
-        return;
-    }
-
+    // if (!dniToDelete || !/^[0-9]{8}$/.test(dniToDelete)) {
+    //   setStatus("Ingrese un DNI válido");
+    //   return;
+    // }
+  
     try {
-        const response = await fetch(`${apiUrl}/delete-user/${dniToDelete}`, {
-            method: "DELETE",
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || "No se pudo eliminar el usuario");
-        }
-
-        setStatusdeleteworker("Worker eliminado con éxito");
+      const response = await fetch(`${apiUrl}/delete-user/${dniToDelete}`, {
+        method: "DELETE",
+      });
+  
+      const data = await response.json();
+  
+      if (data.error) {
+        setStatusdeleteworker(data.error);
+        setDniToDelete(""); // limpia campo
+        setTimeout(() => setStatusdeleteworker(""), 3000); // <-- Esto faltaba aquí
+        return;
+      }
+      
+  
+      if (data.success) {
+        const msg = data.message || "Trabajador eliminado con éxito.";
+        setStatusdeleteworker(msg);
         setDniToDelete("");
-        
         await fetchUsers();
         await fetchDniOptions();
+      }else {
+        // En caso de que no haya ni error ni success, por ejemplo 'NoExiste'
+        alert("Respuesta inesperada del servidor");
+        setStatusdeleteworker("Respuesta inesperada del servidor");
+      }
+  
     } catch (error) {
-        console.error("Error eliminando worker:", error);
-        setStatus(error.message);
-        alert(error.message); // Muestra un mensaje de alerta
+      console.error("Error eliminando worker:", error);
+      alert("Error del servidor");
+      setStatusdeleteworker("Error del servidor");
     }
-
+  
     setTimeout(() => setStatusdeleteworker(""), 3000);
-};
+  };
+  
 
   return (
     <UsersContext.Provider

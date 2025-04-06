@@ -118,7 +118,7 @@ export const HomeDashboard = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
-  console.log("datos cccc",currentItems)
+  // console.log("datos cccc",currentItems)
   // Cambiar de página
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   
@@ -245,13 +245,13 @@ export const HomeDashboard = () => {
                   <tr className="bg-[rgb(23,50,107)] text-white uppercase text-sm leading-normal">
                     <th className="py-3 px-4 text-left">DNI</th>
                     <th className="py-3 px-4 text-left">Nombre completo</th>
-                    <th className="py-3 px-4 text-left">Punto control</th>
-                    
+                    <th className="py-3 px-4 text-left">Empresa</th>
                     <th className="py-3 px-4 text-left">Cargo</th>
                     <th className="py-3 px-4 text-left">Área</th>
                     <th className="py-3 px-4 text-left">Beacon</th>
+                    <th className="py-3 px-4 text-left">Punto control</th>
                     <th className="py-3 px-4 text-left">Fecha</th>
-                    <th className="py-3 px-4 text-left">Empresa</th>
+                    
                   </tr>
                 </thead>
                 <tbody className="text-gray-600 text-sm font-light">
@@ -261,13 +261,12 @@ export const HomeDashboard = () => {
                       <td className="py-3 px-4">
                         {persona.FirstName} {persona.SecondName} {persona.LastName} {persona.SecondLastName}
                       </td>
-                      <td className="py-3 px-4">{persona.Punto_Control}</td>
-                      
+                      <td className="py-3 px-4">{persona.Company}</td>
                       <td className="py-3 px-4">{persona.Position}</td>
                       <td className="py-3 px-4">{persona.Area}</td>
                       <td className="py-3 px-4">{persona.MacAddressiB}</td>
+                      <td className="py-3 px-4">{persona.Punto_Control}</td>           
                       <td className="py-3 px-4">{formatFecha(persona.Fecha)}</td>
-                      <td className="py-3 px-4">{persona.Company}</td>
                     </tr>
                   ))}
                 </tbody>
